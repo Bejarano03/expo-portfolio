@@ -1,10 +1,33 @@
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, Button, Image } from "react-native";
 import { Link } from "expo-router";
+import { useState } from "react";
+import * as ImagePicker from "expo-image-picker";
 
 
 export default function Index() {
+  const [image, setImage] = useState(null);
+
+  const pickImage = async () => {
+   
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
   return (
     <View style={styles.container}>
+      {image && <Image source={{uri : image}} style={styles.image}/>}
+      <Button title="Pick an image from camera roll" onPress={pickImage}/>
+      
       <Text style={styles.title}>Marco Bejarano Oseguera</Text>
       <Text
         style={{
@@ -36,6 +59,11 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
     color: "blue",
     marginTop: 20,
-  }
+  },
+  image: {
+    width: 200,
+    height: 200
+  },
+
 })
 
